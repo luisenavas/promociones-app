@@ -153,6 +153,7 @@ export default function EditCampaignPage() {
     if (!imagenFile && !imagenActualUrl) return setError('Debes tener una imagen.');
     if (!texto.trim()) return setError('El texto del mensaje es obligatorio.');
     if (proveedoresIds.length === 0) return setError('Debes seleccionar al menos un proveedor.');
+    if (proveedoresIds.length > 30) return setError('Solo puedes enviar a un máximo de 30 proveedores por campaña.');
     if (!enviarInmediato && !fechaHoraEnvio) return setError('Indica la fecha y hora de envío, o marca envío inmediato.');
     if (repetir && diasSemana.length === 0) return setError('Selecciona al menos un día de la semana para repetir el envío.');
     if (repetir && !fechaFinalizacion) return setError('Si vas a repetir el envío, debes indicar una fecha de finalización.');
