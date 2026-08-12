@@ -1,0 +1,117 @@
+🔑 Got authentication token
+
+🔍 Fetching deployment info for: dpl_9iJhHky6hWjHwg9pDwu8qan24jLE
+   Resolving teams...
+   Trying dpl_9iJhHky6hWjHwg9pDwu8qan24jLE in personal account...
+✅ Got deployment info
+
+📦 Deployment ID:  dpl_9iJhHky6hWjHwg9pDwu8qan24jLE
+🌐 Deployment URL: promociones-8g3c7qbqr-compumax-ai-team.vercel.app
+📁 Project:        promociones-app
+
+📋 Fetching file tree from API...
+
+✅ Got file tree (10 top-level entries)
+
+📁 Output directory: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source
+
+🗑️  Clearing previous download...
+
+⬇️  Downloading files...
+
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\api\ai-suggest\route.ts
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\api\auth\[...nextauth]\route.ts
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\api\auth\custom-login\route.ts
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\api\campaigns\[id]\route.ts
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\api\campaigns\route.ts
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\api\providers\route.ts
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\api\upload\route.ts
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\api\users\[id]\password\route.ts
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\api\users\[id]\route.ts
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\api\users\route.ts
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\dashboard\campaigns\[id]\edit\page.tsx
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\dashboard\campaigns\new\page.tsx
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\dashboard\perfil\page.tsx
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\dashboard\users\page.tsx
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\dashboard\layout.tsx
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\dashboard\page.tsx
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\login\page.tsx
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\globals.css
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\layout.tsx
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\page.tsx
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\providers.tsx
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\components\CambiarMiPassword.tsx
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\components\DashboardNav.tsx
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\components\EyeToggleButton.tsx
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\components\ProviderPicker.tsx
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\components\UsersManager.tsx
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\lib\auth.ts
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\lib\n8n.ts
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\lib\password.ts
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\types\next-auth.d.ts
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\middleware.ts
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\next.config.mjs
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\package.json
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\postcss.config.js
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\tailwind.config.ts
+✅ Downloaded: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\tsconfig.json
+
+🎉 All files processed successfully!
+
+📊 Running comparison...
+
+📁 Total files: 36
+   ✅ Downloaded: 36
+   ⏭️  Skipped: 0
+   ❌ Failed: 0
+💾 Total size: 0.11 MB
+
+📈 File types breakdown:
+   ts                16 files
+   tsx               15 files
+   json               2 files
+   css                1 files
+   mjs                1 files
+   js                 1 files
+
+🌳 File structure tree:
+
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\api\ai-suggest\route.ts
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\api\auth\[...nextauth]\route.ts
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\api\auth\custom-login\route.ts
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\api\campaigns\[id]\route.ts
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\api\campaigns\route.ts
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\api\providers\route.ts
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\api\upload\route.ts
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\api\users\[id]\password\route.ts
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\api\users\[id]\route.ts
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\api\users\route.ts
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\dashboard\campaigns\[id]\edit\page.tsx
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\dashboard\campaigns\new\page.tsx
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\dashboard\layout.tsx
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\dashboard\page.tsx
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\dashboard\perfil\page.tsx
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\dashboard\users\page.tsx
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\globals.css
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\layout.tsx
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\login\page.tsx
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\page.tsx
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\app\providers.tsx
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\components\CambiarMiPassword.tsx
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\components\DashboardNav.tsx
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\components\EyeToggleButton.tsx
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\components\ProviderPicker.tsx
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\components\UsersManager.tsx
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\lib\auth.ts
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\lib\n8n.ts
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\lib\password.ts
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\middleware.ts
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\next.config.mjs
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\package.json
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\postcss.config.js
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\tailwind.config.ts
+├── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\tsconfig.json
+└── 📄 C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\source\types\next-auth.d.ts
+
+✨ Download and verification complete!
+📄 Full log saved to: C:\Users\Luis Eduardo Navas R\promociones-app-codigo\out\dpl_9iJhHky6hWjHwg9pDwu8qan24jLE\download-log.txt
