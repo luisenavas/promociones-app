@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { Proveedor } from '@/lib/n8n';
 
-type SortKey = 'nombre' | 'ciudad' | 'departamento' | 'cupo_credito' | 'tipo' | 'responsable_zona';
+type SortKey = 'nombre' | 'ciudad' | 'departamento' | 'cupo_credito' | 'tipo' | 'responsable_zona' | 'tipificacion';
 
 const MAX_SELECCIONABLES = 30;
 
@@ -138,6 +138,7 @@ export default function ProviderPicker({
           p.telefono_whatsapp,
           p.tipo,
           p.responsable_zona,
+                    p.tipificacion,
           p.cupo_credito === undefined || p.cupo_credito === null ? '' : String(p.cupo_credito),
         ]
           .map((v) => (v ?? '').toString().toLowerCase());
@@ -356,6 +357,9 @@ export default function ProviderPicker({
               <th className="cursor-pointer px-3 py-2" onClick={() => toggleSort('responsable_zona')}>
                 Responsable de zona{arrow('responsable_zona')}
               </th>
+                              <th className="cursor-pointer px-3 py-2" onClick={() => toggleSort('tipificacion')}>
+                                                  Tipificación{arrow('tipificacion')}
+                              </th>
             </tr>
           </thead>
           <tbody>
@@ -382,6 +386,7 @@ export default function ProviderPicker({
                     {typeof p.cupo_credito === 'number' ? p.cupo_credito.toLocaleString('es-CO') : p.cupo_credito}
                   </td>
                   <td className="px-3 py-2">{p.responsable_zona}</td>
+                                  <td className="px-3 py-2">{p.tipificacion}</td>
                 </tr>
               );
             })}
