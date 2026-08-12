@@ -53,6 +53,7 @@ export type Proveedor = {
   cupo_credito: number;
   correo_contacto: string;
   responsable_zona?: string;
+    tipificacion?: string;
 };
 export type Campana = {
   id: string | number;
