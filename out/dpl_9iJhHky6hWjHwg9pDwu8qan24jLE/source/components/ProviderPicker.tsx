@@ -5,6 +5,8 @@ import type { Proveedor } from '@/lib/n8n';
 
 type SortKey = 'nombre' | 'ciudad' | 'departamento' | 'cupo_credito' | 'tipo' | 'responsable_zona';
 
+const MAX_SELECCIONABLES = 30;
+
 const PREFIJOS_PAIS = [
   { value: '57', label: '+57 Colombia' },
   { value: '52', label: '+52 México' },
@@ -42,6 +44,7 @@ export default function ProviderPicker({
   const [nuevoCupo, setNuevoCupo] = useState('');
   const [creandoContacto, setCreandoContacto] = useState(false);
   const [contactoError, setContactoError] = useState('');
+  const [seleccionError, setSeleccionError] = useState('');
 
   async function cargarProveedores() {
     setLoading(true);
@@ -166,6 +169,13 @@ export default function ProviderPicker({
   function toggleSeleccion(p: Proveedor) {
     const id = String(p.id);
     const yaSeleccionado = selectedIds.includes(id);
+
+    if (!yaSeleccionado && selectedIds.length >= MAX_SELECCIONABLES) {
+      setSeleccionError(`Solo puedes seleccionar hasta ${MAX_SELECCIONABLES} proveedores por envío.`);
+      return;
+    }
+    setSeleccionError('');
+
     const nuevosIds = yaSeleccionado ? selectedIds.filter((x) => x !== id) : [...selectedIds, id];
 
     const telefonos = nuevosIds
@@ -178,13 +188,22 @@ export default function ProviderPicker({
   }
 
   function seleccionarTodos() {
-    const ids = filtrados.map((p) => String(p.id));
-    const telefonos = filtrados.map((p) => p.telefono_whatsapp || p.telefono_principal).filter(Boolean);
+    const limitados = filtrados.slice(0, MAX_SELECCIONABLES);
+    const ids = limitados.map((p) => String(p.id));
+    const telefonos = limitados.map((p) => p.telefono_whatsapp || p.telefono_principal).filter(Boolean);
     onChange(ids, telefonos as string[]);
+    if (filtrados.length > MAX_SELECCIONABLES) {
+      setSeleccionError(
+        `Había ${filtrados.length} proveedores filtrados; solo se seleccionaron los primeros ${MAX_SELECCIONABLES} (límite por envío).`
+      );
+    } else {
+      setSeleccionError('');
+    }
   }
 
   function limpiarSeleccion() {
     onChange([], []);
+    setSeleccionError('');
   }
 
   const arrow = (key: SortKey) => (sortKey === key ? (sortDir === 'asc' ? ' ▲' : ' ▼') : '');
@@ -213,10 +232,16 @@ export default function ProviderPicker({
           </button>
         )}
         <span className="ml-auto text-sm text-slate-500">
-          {selectedIds.length} proveedor{selectedIds.length === 1 ? '' : 'es'} seleccionado
+          {selectedIds.length}/{MAX_SELECCIONABLES} proveedor{selectedIds.length === 1 ? '' : 'es'} seleccionado
           {selectedIds.length === 1 ? '' : 's'}
         </span>
       </div>
+
+      {seleccionError && (
+        <p className="mb-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700">
+          {seleccionError}
+        </p>
+      )}
 
       {mostrarFormContacto && (
         <form onSubmit={handleCrearContacto} className="card mb-4 grid gap-4 sm:grid-cols-2">
