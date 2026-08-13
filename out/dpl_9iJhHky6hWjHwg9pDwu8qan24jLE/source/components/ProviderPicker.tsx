@@ -245,7 +245,7 @@ export default function ProviderPicker({
       )}
 
       {mostrarFormContacto && (
-        <form onSubmit={handleCrearContacto} className="card mb-4 grid gap-4 sm:grid-cols-2">
+        <div className="card mb-4 grid gap-4 sm:grid-cols-2">
           <div>
             <label className="label">Nombre</label>
             <input
@@ -322,14 +322,14 @@ export default function ProviderPicker({
           {contactoError && <p className="sm:col-span-2 text-sm text-red-600">{contactoError}</p>}
 
           <div className="flex gap-2 sm:col-span-2">
-            <button type="submit" disabled={creandoContacto} className="btn-primary">
+            <button type="button" onClick={handleCrearContacto} disabled={creandoContacto} className="btn-primary">
               {creandoContacto ? 'Agregando...' : 'Agregar contacto'}
             </button>
             <button type="button" className="btn-secondary" onClick={cancelarFormContacto}>
               Cancelar
             </button>
           </div>
-        </form>
+        </div>
       )}
 
       <div className="max-h-96 overflow-y-auto rounded-xl border border-slate-200">
