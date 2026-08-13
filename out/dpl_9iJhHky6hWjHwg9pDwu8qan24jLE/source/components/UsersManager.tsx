@@ -13,6 +13,20 @@ type Usuario = {
   rol: Rol;
   vendedor_asignado?: string;
 };
+const VENDEDORES = [
+  'Ricardo Alejandro Castro Pinzon',
+  'Silvia Catalina Suarez Vega',
+  'Jenny Maricela Pico Crespo',
+  'Vanessa Gomez Cortes',
+  'Andres Fernando Gutierrez Parra',
+  'Maria Fernanda Gomez Cortes',
+  'Dayana Patricia Barrera Escamilla',
+  'Jesus Leonardo Gelvis Becerra',
+  'Mauricio Navas Almeida',
+  'Leonardo Fabio Monroy Cadena',
+  'Cynthia Paola Cantero Perez',
+  'Jonatan Efren David Noguera Poveda',
+];
 
 const CORREOS_PROTEGIDOS = ['mauricio.navas@compumax.com', 'luis.navas@compumax.com'];
 function esCuentaProtegida(email: string) {
