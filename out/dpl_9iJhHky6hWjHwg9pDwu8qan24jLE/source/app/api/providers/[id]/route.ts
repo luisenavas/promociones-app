@@ -2,20 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { n8nFetch } from '@/lib/n8n';
-export async function GET() {
+
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
-  try {
-    const data = await n8nFetch('promociones/proveedores', { method: 'GET' });
-    const proveedores = Array.isArray(data) ? data : data ? [data] : [];
-    return NextResponse.json(proveedores);
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  }
-}
-export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+
   try {
     const { nombre, ciudad, departamento, telefono, tipo, cupo_credito, responsable_zona } = await req.json();
     if (!nombre || !ciudad || !departamento || !telefono || !tipo) {
@@ -31,12 +22,37 @@ export async function POST(req: NextRequest) {
     if (Number.isNaN(cupoFinal)) {
       return NextResponse.json({ error: 'El cupo de crédito debe ser un número.' }, { status: 400 });
     }
-    const data = await n8nFetch('promociones/proveedores/crear', {
+
+    const data = await n8nFetch('promociones/proveedores/actualizar', {
       method: 'POST',
-      body: { nombre, ciudad, departamento, telefono, tipo, cupo_credito: cupoFinal, responsable_zona: responsable_zona || '' },
+      body: {
+        id: params.id,
+        nombre,
+        ciudad,
+        departamento,
+        telefono,
+        tipo,
+        cupo_credito: cupoFinal,
+        responsable_zona: responsable_zona || '',
+      },
     });
     return NextResponse.json(data);
   } catch (err: any) {
-    return NextResponse.json({ error: err.message || 'Error al crear el contacto.' }, { status: 400 });
+    return NextResponse.json({ error: err.message || 'Error al actualizar el contacto.' }, { status: 400 });
+  }
+}
+
+export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+  const session = await getServerSession(authOptions);
+  if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+
+  try {
+    const data = await n8nFetch('promociones/proveedores/eliminar', {
+      method: 'POST',
+      body: { id: params.id },
+    });
+    return NextResponse.json(data);
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message || 'Error al eliminar el contacto.' }, { status: 400 });
   }
 }

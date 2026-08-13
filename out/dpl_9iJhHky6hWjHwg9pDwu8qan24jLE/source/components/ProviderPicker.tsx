@@ -50,6 +50,7 @@ export default function ProviderPicker({
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
 
   const [mostrarFormContacto, setMostrarFormContacto] = useState(false);
+  const [editandoId, setEditandoId] = useState<string | null>(null);
   const [nuevoNombre, setNuevoNombre] = useState('');
   const [nuevoCiudad, setNuevoCiudad] = useState('');
   const [nuevoDepartamento, setNuevoDepartamento] = useState('');
@@ -61,6 +62,7 @@ export default function ProviderPicker({
   const [creandoContacto, setCreandoContacto] = useState(false);
   const [contactoError, setContactoError] = useState('');
   const [seleccionError, setSeleccionError] = useState('');
+  const [eliminandoSeleccionados, setEliminandoSeleccionados] = useState(false);
 
   async function cargarProveedores() {
     setLoading(true);
@@ -82,6 +84,7 @@ export default function ProviderPicker({
   }, []);
 
   function limpiarFormContacto() {
+    setEditandoId(null);
     setNuevoNombre('');
     setNuevoCiudad('');
     setNuevoDepartamento('');
@@ -98,7 +101,25 @@ export default function ProviderPicker({
     limpiarFormContacto();
   }
 
-  async function handleCrearContacto(e: React.FormEvent) {
+  function abrirFormEditar(p: Proveedor) {
+    setEditandoId(String(p.id));
+    setNuevoNombre(p.nombre || '');
+    setNuevoCiudad(p.ciudad || '');
+    setNuevoDepartamento(p.departamento || '');
+    setNuevoTelefono(p.telefono_principal || '');
+    setNuevoTipo(p.tipo || '');
+    setNuevoCupo(p.cupo_credito === undefined || p.cupo_credito === null ? '' : String(p.cupo_credito));
+    setNuevoResponsable(p.responsable_zona || '');
+    setContactoError('');
+    setMostrarFormContacto(true);
+  }
+
+  function abrirFormAgregar() {
+    limpiarFormContacto();
+    setMostrarFormContacto(true);
+  }
+
+  async function handleGuardarContacto(e: React.FormEvent) {
     e.preventDefault();
     setContactoError('');
 
@@ -114,21 +135,22 @@ export default function ProviderPicker({
 
     setCreandoContacto(true);
     try {
-      const res = await fetch('/api/providers', {
-        method: 'POST',
+      const body = {
+        nombre: nuevoNombre,
+        ciudad: nuevoCiudad,
+        departamento: nuevoDepartamento,
+        telefono: editandoId ? telefonoLimpio : `${nuevoPrefijo}${telefonoLimpio}`,
+        tipo: nuevoTipo,
+        cupo_credito: nuevoCupo === '' ? 0 : Number(nuevoCupo),
+        responsable_zona: nuevoResponsable,
+      };
+      const res = await fetch(editandoId ? `/api/providers/${editandoId}` : '/api/providers', {
+        method: editandoId ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nombre: nuevoNombre,
-          ciudad: nuevoCiudad,
-          departamento: nuevoDepartamento,
-          telefono: `${nuevoPrefijo}${telefonoLimpio}`,
-          tipo: nuevoTipo,
-          cupo_credito: nuevoCupo === '' ? 0 : Number(nuevoCupo),
-          responsable_zona: nuevoResponsable,
-        }),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Error al agregar el contacto.');
+      if (!res.ok) throw new Error(data.error || 'Error al guardar el contacto.');
 
       cancelarFormContacto();
       await cargarProveedores();
@@ -136,6 +158,37 @@ export default function ProviderPicker({
       setContactoError(err.message);
     } finally {
       setCreandoContacto(false);
+    }
+  }
+
+  async function eliminarSeleccionados() {
+    if (selectedIds.length === 0) return;
+    const confirmado = window.confirm(
+      `¿Eliminar permanentemente ${selectedIds.length} proveedor${selectedIds.length === 1 ? '' : 'es'} seleccionado${selectedIds.length === 1 ? '' : 's'}? Esta acción no se puede deshacer.`
+    );
+    if (!confirmado) return;
+
+    setEliminandoSeleccionados(true);
+    setSeleccionError('');
+    try {
+      const resultados = await Promise.all(
+        selectedIds.map(async (id) => {
+          const res = await fetch(`/api/providers/${id}`, { method: 'DELETE' });
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            return data.error || `Error al eliminar el proveedor ${id}.`;
+          }
+          return null;
+        })
+      );
+      const errores = resultados.filter(Boolean) as string[];
+      onChange([], []);
+      await cargarProveedores();
+      if (errores.length > 0) {
+        setSeleccionError(errores[0]);
+      }
+    } finally {
+      setEliminandoSeleccionados(false);
     }
   }
 
@@ -246,8 +299,18 @@ export default function ProviderPicker({
           Limpiar selección
         </button>
         {!mostrarFormContacto && (
-          <button type="button" onClick={() => setMostrarFormContacto(true)} className="btn-secondary text-xs">
+          <button type="button" onClick={abrirFormAgregar} className="btn-secondary text-xs">
             <span className="text-base leading-none">+</span> Agregar contacto
+          </button>
+        )}
+        {selectedIds.length > 0 && (
+          <button
+            type="button"
+            onClick={eliminarSeleccionados}
+            disabled={eliminandoSeleccionados}
+            className="btn-secondary text-xs text-red-600"
+          >
+            {eliminandoSeleccionados ? 'Eliminando...' : `Eliminar seleccionados (${selectedIds.length})`}
           </button>
         )}
         <span className="ml-auto text-sm text-slate-500">
@@ -264,6 +327,9 @@ export default function ProviderPicker({
 
       {mostrarFormContacto && (
         <div className="card mb-4 grid gap-4 sm:grid-cols-2">
+          <p className="text-sm font-medium text-slate-600 sm:col-span-2">
+            {editandoId ? 'Editar contacto' : 'Agregar contacto'}
+          </p>
           <div>
             <label className="label">Nombre</label>
             <input
@@ -293,28 +359,40 @@ export default function ProviderPicker({
           </div>
           <div>
             <label className="label">Teléfono</label>
-            <div className="grid grid-cols-[9rem_1fr] gap-2">
-              <select
-                className="input"
-                value={nuevoPrefijo}
-                onChange={(e) => setNuevoPrefijo(e.target.value)}
-              >
-                {PREFIJOS_PAIS.map((p) => (
-                  <option key={p.value} value={p.value}>
-                    {p.label}
-                  </option>
-                ))}
-              </select>
+            {editandoId ? (
               <input
                 required
                 type="tel"
                 inputMode="numeric"
-                placeholder="Número sin el prefijo"
+                placeholder="Teléfono con indicativo de país"
                 className="input"
                 value={nuevoTelefono}
                 onChange={(e) => setNuevoTelefono(e.target.value)}
               />
-            </div>
+            ) : (
+              <div className="grid grid-cols-[9rem_1fr] gap-2">
+                <select
+                  className="input"
+                  value={nuevoPrefijo}
+                  onChange={(e) => setNuevoPrefijo(e.target.value)}
+                >
+                  {PREFIJOS_PAIS.map((p) => (
+                    <option key={p.value} value={p.value}>
+                      {p.label}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  required
+                  type="tel"
+                  inputMode="numeric"
+                  placeholder="Número sin el prefijo"
+                  className="input"
+                  value={nuevoTelefono}
+                  onChange={(e) => setNuevoTelefono(e.target.value)}
+                />
+              </div>
+            )}
           </div>
           <div>
             <label className="label">Tipo</label>
@@ -349,8 +427,8 @@ export default function ProviderPicker({
           {contactoError && <p className="sm:col-span-2 text-sm text-red-600">{contactoError}</p>}
 
           <div className="flex gap-2 sm:col-span-2">
-            <button type="button" onClick={handleCrearContacto} disabled={creandoContacto} className="btn-primary">
-              {creandoContacto ? 'Agregando...' : 'Agregar contacto'}
+            <button type="button" onClick={handleGuardarContacto} disabled={creandoContacto} className="btn-primary">
+              {creandoContacto ? 'Guardando...' : editandoId ? 'Guardar cambios' : 'Agregar contacto'}
             </button>
             <button type="button" className="btn-secondary" onClick={cancelarFormContacto}>
               Cancelar
@@ -364,6 +442,7 @@ export default function ProviderPicker({
           <thead className="sticky top-0 bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-400">
             <tr>
               <th className="px-3 py-2.5"></th>
+              <th className="px-3 py-2"></th>
               <th className="cursor-pointer px-3 py-2" onClick={() => toggleSort('nombre')}>
                 Nombre{arrow('nombre')}
               </th>
@@ -402,6 +481,18 @@ export default function ProviderPicker({
                 >
                   <td className="px-3 py-2">
                     <input type="checkbox" checked={checked} readOnly />
+                  </td>
+                  <td className="px-3 py-2">
+                    <button
+                      type="button"
+                      className="text-xs font-medium text-brand-600 hover:underline"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        abrirFormEditar(p);
+                      }}
+                    >
+                      Editar
+                    </button>
                   </td>
                   <td className="px-3 py-2">{p.nombre}</td>
                   <td className="px-3 py-2">{p.ciudad}</td>
