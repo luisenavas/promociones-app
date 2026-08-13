@@ -11,6 +11,7 @@ type Usuario = {
   nombre: string;
   email: string;
   rol: Rol;
+  vendedor_asignado?: string;
 };
 
 const CORREOS_PROTEGIDOS = ['mauricio.navas@compumax.com', 'luis.navas@compumax.com'];
