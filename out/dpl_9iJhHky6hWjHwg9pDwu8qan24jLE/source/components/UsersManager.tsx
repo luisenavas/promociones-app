@@ -78,6 +78,7 @@ export default function UsersManager() {
   const [password, setPassword] = useState('');
   const [verPassword, setVerPassword] = useState(false);
   const [rol, setRol] = useState<Rol>('empleado');
+  const [vendedorAsignado, setVendedorAsignado] = useState('');
   const [creando, setCreando] = useState(false);
   const [formError, setFormError] = useState('');
 
@@ -85,6 +86,7 @@ export default function UsersManager() {
   const [editNombre, setEditNombre] = useState('');
   const [editEmail, setEditEmail] = useState('');
   const [editRol, setEditRol] = useState<Rol>('empleado');
+  const [editVendedorAsignado, setEditVendedorAsignado] = useState('');
   const [editError, setEditError] = useState('');
   const [guardandoEdicion, setGuardandoEdicion] = useState(false);
 
@@ -146,8 +148,8 @@ export default function UsersManager() {
       const res = await fetch('/api/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, email, password, rol }),
-      });
+        body: JSON.stringify({ nombre, email, password, rol, vendedor_asignado: vendedorAsignado }),
+      });  
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Error al crear el usuario.');
 
@@ -156,6 +158,7 @@ export default function UsersManager() {
       setPassword('');
       setVerPassword(false);
       setRol('empleado');
+      setVendedorAsignado('');
       setMostrarFormCrear(false);
       await cargarUsuarios();
     } catch (err: any) {
@@ -173,6 +176,7 @@ export default function UsersManager() {
     setPassword('');
     setVerPassword(false);
     setRol('empleado');
+    setVendedorAsignado('');
   }
 
   function iniciarEdicion(u: Usuario) {
@@ -181,6 +185,7 @@ export default function UsersManager() {
     setEditNombre(u.nombre);
     setEditEmail(u.email);
     setEditRol(u.rol);
+    setEditVendedorAsignado(u.vendedor_asignado || '');
     setEditError('');
   }
 
@@ -204,7 +209,7 @@ export default function UsersManager() {
       const res = await fetch(`/api/users/${u.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre: editNombre, email: editEmail, rol: editRol }),
+        body: JSON.stringify({ nombre: editNombre, email: editEmail, rol: editRol, vendedor_asignado: editVendedorAsignado }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Error al actualizar el usuario.');
