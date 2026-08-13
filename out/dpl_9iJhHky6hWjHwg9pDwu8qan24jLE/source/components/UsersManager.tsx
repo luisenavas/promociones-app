@@ -356,6 +356,15 @@ export default function UsersManager() {
                 {soyAdminPrimario && <option value="admin_primario">Administrador Primario</option>}
               </select>
             </div>
+            <div>
+              <label className="label">Vendedor asignado (opcional)</label>
+              <select className="input" value={vendedorAsignado} onChange={(e) => setVendedorAsignado(e.target.value)}>
+                <option value="">Sin asignar</option>
+                {VENDEDORES.map((v) => (
+                  <option key={v} value={v}>{v}</option>
+                ))}
+              </select>
+            </div>
 
             {formError && <p className="sm:col-span-2 text-sm text-red-600">{formError}</p>}
 
@@ -452,7 +461,7 @@ export default function UsersManager() {
                   {editandoId === u.id && (
                     <tr className="border-t border-slate-100 bg-slate-50">
                       <td colSpan={3} className="px-6 py-4">
-                        <div className="grid gap-3 sm:grid-cols-3">
+                        <div className="grid gap-3 sm:grid-cols-4">
                           <div>
                             <label className="label">Nombre</label>
                             <input
@@ -489,6 +498,15 @@ export default function UsersManager() {
                             )}
                           </div>
                         </div>
+                        <div>
+                            <label className="label">Vendedor asignado</label>
+                            <select className="input" value={editVendedorAsignado} onChange={(e) => setEditVendedorAsignado(e.target.value)}>
+                              <option value="">Sin asignar</option>
+                              {VENDEDORES.map((v) => (
+                                <option key={v} value={v}>{v}</option>
+                              ))}
+                            </select>
+                          </div>
                         {editError && <p className="mt-2 text-sm text-red-600">{editError}</p>}
                         <div className="mt-3 flex gap-2">
                           <button
