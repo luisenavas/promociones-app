@@ -291,7 +291,6 @@ export default function ProviderPicker({
                 required
                 type="tel"
                 inputMode="numeric"
-                pattern="[0-9]*"
                 placeholder="Número sin el prefijo"
                 className="input"
                 value={nuevoTelefono}
