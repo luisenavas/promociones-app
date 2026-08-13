@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Solo un administrador puede crear usuarios.' }, { status: 403 });
   }
   try {
-    const { nombre, email, password, rol } = await req.json();
+    const { nombre, email, password, rol, vendedor_asignado } = await req.json();
     if (!nombre || !email || !password) {
       return NextResponse.json({ error: 'Nombre, correo y contraseña son obligatorios.' }, { status: 400 });
     }
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
     const password_hash = hashPassword(password);
     const data = await n8nFetch('promociones/usuarios/crear', {
       method: 'POST',
-      body: { nombre, email: emailNormalizado, password_hash, rol: rolFinal },
+      body: { nombre, email: emailNormalizado, password_hash, rol: rolFinal, vendedor_asignado: vendedor_asignado || '' },
     });
     return NextResponse.json(data);
   } catch (err: any) {
