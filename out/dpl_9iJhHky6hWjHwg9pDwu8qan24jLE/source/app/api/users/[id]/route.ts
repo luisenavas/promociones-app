@@ -14,7 +14,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 
   try {
-    const { nombre, email, rol } = await req.json();
+    const { nombre, email, rol, vendedor_asignado } = await req.json();
 
     if (!nombre || !email) {
       return NextResponse.json({ error: 'Nombre y correo son obligatorios.' }, { status: 400 });
@@ -76,7 +76,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
     const data = await n8nFetch('promociones/usuarios/actualizar-perfil', {
       method: 'POST',
-      body: { id: params.id, nombre, email: emailNormalizado, rol: rolFinal },
+      body: { id: params.id, nombre, email: emailNormalizado, rol: rolFinal, vendedor_asignado: vendedor_asignado || '' },
     });
 
     return NextResponse.json(data);
