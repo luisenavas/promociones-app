@@ -20,6 +20,21 @@ const PREFIJOS_PAIS = [
   { value: '1', label: '+1 Estados Unidos' },
 ];
 
+const RESPONSABLES_ZONA = [
+  'Ricardo Alejandro Castro Pinzon',
+  'Silvia Catalina Suarez Vega',
+  'Jenny Maricela Pico Crespo',
+  'Vanessa Gomez Cortes',
+  'Andres Fernando Gutierrez Parra',
+  'Maria Fernanda Gomez Cortes',
+  'Dayana Patricia Barrera Escamilla',
+  'Jesus Leonardo Gelvis Becerra',
+  'Mauricio Navas Almeida',
+  'Leonardo Fabio Monroy Cadena',
+  'Cynthia Paola Cantero Perez',
+  'Jonatan Efren David Noguera Poveda',
+];
+
 export default function ProviderPicker({
   selectedIds,
   onChange,
@@ -42,6 +57,7 @@ export default function ProviderPicker({
   const [nuevoTelefono, setNuevoTelefono] = useState('');
   const [nuevoTipo, setNuevoTipo] = useState('');
   const [nuevoCupo, setNuevoCupo] = useState('');
+  const [nuevoResponsable, setNuevoResponsable] = useState('');
   const [creandoContacto, setCreandoContacto] = useState(false);
   const [contactoError, setContactoError] = useState('');
   const [seleccionError, setSeleccionError] = useState('');
@@ -73,6 +89,7 @@ export default function ProviderPicker({
     setNuevoTelefono('');
     setNuevoTipo('');
     setNuevoCupo('');
+    setNuevoResponsable('');
     setContactoError('');
   }
 
@@ -107,6 +124,7 @@ export default function ProviderPicker({
           telefono: `${nuevoPrefijo}${telefonoLimpio}`,
           tipo: nuevoTipo,
           cupo_credito: nuevoCupo === '' ? 0 : Number(nuevoCupo),
+          responsable_zona: nuevoResponsable,
         }),
       });
       const data = await res.json();
@@ -317,6 +335,15 @@ export default function ProviderPicker({
               value={nuevoCupo}
               onChange={(e) => setNuevoCupo(e.target.value)}
             />
+          </div>
+          <div>
+            <label className="label">Responsable de zona (opcional)</label>
+            <select className="input" value={nuevoResponsable} onChange={(e) => setNuevoResponsable(e.target.value)}>
+              <option value="">Sin asignar</option>
+              {RESPONSABLES_ZONA.map((r) => (
+                <option key={r} value={r}>{r}</option>
+              ))}
+            </select>
           </div>
 
           {contactoError && <p className="sm:col-span-2 text-sm text-red-600">{contactoError}</p>}
