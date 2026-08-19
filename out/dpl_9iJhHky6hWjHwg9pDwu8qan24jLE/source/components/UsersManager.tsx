@@ -3,6 +3,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import EyeToggleButton from './EyeToggleButton';
+import ConfirmDialog from './ConfirmDialog';
 
 type Rol = 'admin_primario' | 'admin' | 'empleado';
 
@@ -114,6 +115,9 @@ export default function UsersManager() {
   const [accionError, setAccionError] = useState('');
 
   const [mostrarFormCrear, setMostrarFormCrear] = useState(false);
+  const [confirmAccion, setConfirmAccion] = useState<{ title: string; message: string; danger?: boolean; run: () => void } | null>(
+    null
+  );
 
   async function cargarUsuarios() {
     setLoading(true);
@@ -194,7 +198,7 @@ export default function UsersManager() {
     setEditError('');
   }
 
-  async function handleGuardarEdicion(u: Usuario) {
+  function handleGuardarEdicion(u: Usuario) {
     setEditError('');
 
     if (!editEmail.toLowerCase().trim().endsWith('@compumax.com')) {
@@ -202,8 +206,14 @@ export default function UsersManager() {
       return;
     }
 
-    if (!window.confirm(`¿Deseas guardar los cambios del perfil de "${u.nombre}"?`)) return;
+    setConfirmAccion({
+      title: 'Guardar cambios',
+      message: `¿Deseas guardar los cambios del perfil de "${u.nombre}"?`,
+      run: () => ejecutarGuardarEdicion(u),
+    });
+  }
 
+  async function ejecutarGuardarEdicion(u: Usuario) {
     setGuardandoEdicion(true);
     try {
       const res = await fetch(`/api/users/${u.id}`, {
@@ -237,7 +247,7 @@ export default function UsersManager() {
     setPasswordError('');
   }
 
-  async function handleGuardarPassword(u: Usuario) {
+  function handleGuardarPassword(u: Usuario) {
     setPasswordError('');
 
     if (!nuevaPassword) {
@@ -245,8 +255,15 @@ export default function UsersManager() {
       return;
     }
 
-    if (!window.confirm(`¿Deseas continuar? Se restablecerá la contraseña de "${u.nombre}".`)) return;
+    setConfirmAccion({
+      title: 'Restablecer contraseña',
+      message: `¿Deseas continuar? Se restablecerá la contraseña de "${u.nombre}".`,
+      danger: true,
+      run: () => ejecutarGuardarPassword(u),
+    });
+  }
 
+  async function ejecutarGuardarPassword(u: Usuario) {
     setGuardandoPassword(true);
     try {
       const res = await fetch(`/api/users/${u.id}/password`, {
@@ -268,7 +285,7 @@ export default function UsersManager() {
     }
   }
 
-  async function handleEliminar(u: Usuario) {
+  function handleEliminar(u: Usuario) {
     setAccionError('');
 
     const esPropia = String(u.id) === String(miId);
@@ -282,10 +299,15 @@ export default function UsersManager() {
       return;
     }
 
-    if (!window.confirm(`¿Deseas continuar? Se eliminará permanentemente la cuenta de "${u.nombre}" (${u.email}).`)) {
-      return;
-    }
+    setConfirmAccion({
+      title: 'Eliminar usuario',
+      message: `¿Deseas continuar? Se eliminará permanentemente la cuenta de "${u.nombre}" (${u.email}).`,
+      danger: true,
+      run: () => ejecutarEliminar(u),
+    });
+  }
 
+  async function ejecutarEliminar(u: Usuario) {
     setEliminandoId(u.id);
     try {
       const res = await fetch(`/api/users/${u.id}`, { method: 'DELETE' });
@@ -567,6 +589,19 @@ export default function UsersManager() {
           </table>
         )}
       </div>
+
+      <ConfirmDialog
+        open={!!confirmAccion}
+        title={confirmAccion?.title || ''}
+        message={confirmAccion?.message || ''}
+        danger={confirmAccion?.danger}
+        loading={guardandoEdicion || guardandoPassword || !!eliminandoId}
+        onConfirm={() => {
+          confirmAccion?.run();
+          setConfirmAccion(null);
+        }}
+        onCancel={() => setConfirmAccion(null)}
+      />
     </div>
   );
 }

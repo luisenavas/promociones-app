@@ -11,16 +11,26 @@ export const TIPOS_CLASIFICACION = [
 
 export type Clasificacion = { tipo: string; carpeta: string };
 
+export type ResumenEnvio = {
+  totalDestinatarios: number;
+  porZona: { zona: string; cantidad: number }[];
+  enviarInmediato: boolean;
+};
+
 export default function ClasificacionCampanaModal({
   open,
   valorInicial,
   guardando,
+  resumenEnvio,
+  advertenciaEstado,
   onCancelar,
   onConfirmar,
 }: {
   open: boolean;
   valorInicial?: Clasificacion | null;
   guardando?: boolean;
+  resumenEnvio?: ResumenEnvio;
+  advertenciaEstado?: string;
   onCancelar: () => void;
   onConfirmar: (valor: Clasificacion) => void;
 }) {
@@ -64,10 +74,40 @@ export default function ClasificacionCampanaModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-4">
       <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-        <h2 className="text-lg font-semibold text-slate-900">Clasificar campaña</h2>
+        <h2 className="text-lg font-semibold text-slate-900">Confirmar campaña</h2>
         <p className="mt-1 text-sm text-slate-500">
-          Elige cómo quieres organizar esta campaña antes de guardarla.
+          Revisa el resumen y elige cómo quieres organizar esta campaña antes de guardarla.
         </p>
+
+        {resumenEnvio && (
+          <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3">
+            <p className="text-sm font-medium text-slate-700">
+              {resumenEnvio.totalDestinatarios} destinatario{resumenEnvio.totalDestinatarios === 1 ? '' : 's'}
+            </p>
+            {resumenEnvio.porZona.length > 0 && (
+              <ul className="mt-1 space-y-0.5 text-xs text-slate-500">
+                {resumenEnvio.porZona.map((z) => (
+                  <li key={z.zona}>
+                    {z.zona}: {z.cantidad}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+
+        {resumenEnvio?.enviarInmediato && (
+          <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700">
+            ⚠️ Esto enviará el mensaje <strong>ahora mismo</strong> a {resumenEnvio.totalDestinatarios}{' '}
+            destinatario{resumenEnvio.totalDestinatarios === 1 ? '' : 's'}.
+          </p>
+        )}
+
+        {advertenciaEstado && (
+          <p className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            ⚠️ {advertenciaEstado}
+          </p>
+        )}
 
         <div className="mt-5">
           <label className="label">¿Cómo deseas clasificarla?</label>
@@ -138,9 +178,13 @@ export default function ClasificacionCampanaModal({
             type="button"
             disabled={!puedeConfirmar || guardando}
             onClick={() => onConfirmar({ tipo, carpeta: carpetaFinal })}
-            className="btn-primary"
+            className={resumenEnvio?.enviarInmediato ? 'btn-danger' : 'btn-primary'}
           >
-            {guardando ? 'Guardando...' : 'Confirmar y guardar campaña'}
+            {guardando
+              ? 'Guardando...'
+              : resumenEnvio?.enviarInmediato
+              ? 'Confirmar y enviar ahora'
+              : 'Confirmar y guardar campaña'}
           </button>
           <button type="button" onClick={onCancelar} className="btn-secondary" disabled={guardando}>
             Cancelar

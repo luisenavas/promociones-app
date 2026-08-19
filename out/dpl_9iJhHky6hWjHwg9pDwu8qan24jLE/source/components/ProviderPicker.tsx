@@ -2,6 +2,9 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import type { Proveedor } from '@/lib/n8n';
+import ConfirmDialog from '@/components/ConfirmDialog';
+
+const POR_PAGINA = 50;
 
 type SortKey = 'nombre' | 'ciudad' | 'departamento' | 'cupo_credito' | 'tipo' | 'responsable_zona' | 'tipificacion';
 
@@ -63,6 +66,8 @@ export default function ProviderPicker({
   const [contactoError, setContactoError] = useState('');
   const [seleccionError, setSeleccionError] = useState('');
   const [eliminandoSeleccionados, setEliminandoSeleccionados] = useState(false);
+  const [confirmarEliminarSeleccionados, setConfirmarEliminarSeleccionados] = useState(false);
+  const [pagina, setPagina] = useState(0);
 
   async function cargarProveedores() {
     setLoading(true);
@@ -163,11 +168,6 @@ export default function ProviderPicker({
 
   async function eliminarSeleccionados() {
     if (selectedIds.length === 0) return;
-    const confirmado = window.confirm(
-      `¿Eliminar permanentemente ${selectedIds.length} proveedor${selectedIds.length === 1 ? '' : 'es'} seleccionado${selectedIds.length === 1 ? '' : 's'}? Esta acción no se puede deshacer.`
-    );
-    if (!confirmado) return;
-
     setEliminandoSeleccionados(true);
     setSeleccionError('');
     try {
@@ -189,6 +189,7 @@ export default function ProviderPicker({
       }
     } finally {
       setEliminandoSeleccionados(false);
+      setConfirmarEliminarSeleccionados(false);
     }
   }
 
@@ -228,6 +229,14 @@ export default function ProviderPicker({
     });
     return sorted;
   }, [proveedores, search, sortKey, sortDir]);
+
+  const totalPaginas = Math.max(1, Math.ceil(filtrados.length / POR_PAGINA));
+  const paginaSegura = Math.min(pagina, totalPaginas - 1);
+  const paginaItems = filtrados.slice(paginaSegura * POR_PAGINA, (paginaSegura + 1) * POR_PAGINA);
+
+  useEffect(() => {
+    setPagina(0);
+  }, [search, sortKey, sortDir]);
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
@@ -306,7 +315,7 @@ export default function ProviderPicker({
         {selectedIds.length > 0 && (
           <button
             type="button"
-            onClick={eliminarSeleccionados}
+            onClick={() => setConfirmarEliminarSeleccionados(true)}
             disabled={eliminandoSeleccionados}
             className="btn-secondary text-xs text-red-600"
           >
@@ -468,7 +477,7 @@ export default function ProviderPicker({
             </tr>
           </thead>
           <tbody>
-            {filtrados.map((p) => {
+            {paginaItems.map((p) => {
               const checked = selectedIds.includes(String(p.id));
               const telefono = p.telefono_whatsapp || p.telefono_principal;
               return (
@@ -510,6 +519,41 @@ export default function ProviderPicker({
           </tbody>
         </table>
       </div>
+
+      <div className="mt-3 flex items-center justify-between text-sm text-slate-500">
+        <span>
+          {filtrados.length} proveedor{filtrados.length === 1 ? '' : 'es'} · página {paginaSegura + 1} de {totalPaginas}
+        </span>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => setPagina((p) => Math.max(0, p - 1))}
+            disabled={paginaSegura === 0}
+            className="btn-secondary text-xs"
+          >
+            ← Anterior
+          </button>
+          <button
+            type="button"
+            onClick={() => setPagina((p) => Math.min(totalPaginas - 1, p + 1))}
+            disabled={paginaSegura >= totalPaginas - 1}
+            className="btn-secondary text-xs"
+          >
+            Siguiente →
+          </button>
+        </div>
+      </div>
+
+      <ConfirmDialog
+        open={confirmarEliminarSeleccionados}
+        title="Eliminar proveedores seleccionados"
+        message={`¿Eliminar permanentemente ${selectedIds.length} proveedor${selectedIds.length === 1 ? '' : 'es'} seleccionado${selectedIds.length === 1 ? '' : 's'}? Esta acción no se puede deshacer.`}
+        confirmLabel="Eliminar"
+        danger
+        loading={eliminandoSeleccionados}
+        onConfirm={eliminarSeleccionados}
+        onCancel={() => setConfirmarEliminarSeleccionados(false)}
+      />
     </div>
   );
 }

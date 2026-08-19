@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { Campana } from '@/lib/n8n';
 import { TIPOS_CLASIFICACION } from '@/components/ClasificacionCampanaModal';
+import ConfirmDialog from '@/components/ConfirmDialog';
 
 const estadoLabels: Record<string, string> = {
   pendiente: 'Pendiente',
@@ -23,6 +24,7 @@ export default function DashboardPage() {
   const [deletingId, setDeletingId] = useState<string | number | null>(null);
   const [filtroTipo, setFiltroTipo] = useState('');
   const [filtroCarpeta, setFiltroCarpeta] = useState('');
+  const [campanaAEliminar, setCampanaAEliminar] = useState<Campana | null>(null);
 
   async function cargarCampanas() {
     setLoading(true);
@@ -62,7 +64,6 @@ export default function DashboardPage() {
   }, [campanas, filtroTipo, filtroCarpeta]);
 
   async function eliminarCampana(id: string | number) {
-    if (!confirm('¿Seguro que quieres eliminar esta campaña?')) return;
     setDeletingId(id);
     try {
       const res = await fetch(`/api/campaigns/${id}`, { method: 'DELETE' });
@@ -72,9 +73,10 @@ export default function DashboardPage() {
       }
       setCampanas((prev) => prev.filter((c) => c.id !== id));
     } catch (err: any) {
-      alert(err.message);
+      setError(err.message);
     } finally {
       setDeletingId(null);
+      setCampanaAEliminar(null);
     }
   }
 
@@ -227,7 +229,7 @@ export default function DashboardPage() {
                   Editar
                 </Link>
                 <button
-                  onClick={() => eliminarCampana(c.id)}
+                  onClick={() => setCampanaAEliminar(c)}
                   disabled={deletingId === c.id}
                   className="text-sm font-medium text-red-600 transition hover:text-red-700 disabled:opacity-50"
                 >
@@ -238,6 +240,17 @@ export default function DashboardPage() {
           );
         })}
       </div>
+
+      <ConfirmDialog
+        open={!!campanaAEliminar}
+        title="Eliminar campaña"
+        message={`¿Seguro que quieres eliminar "${campanaAEliminar?.nombre}"? Esta acción no se puede deshacer.`}
+        confirmLabel="Eliminar"
+        danger
+        loading={deletingId === campanaAEliminar?.id}
+        onConfirm={() => campanaAEliminar && eliminarCampana(campanaAEliminar.id)}
+        onCancel={() => setCampanaAEliminar(null)}
+      />
     </div>
   );
 }

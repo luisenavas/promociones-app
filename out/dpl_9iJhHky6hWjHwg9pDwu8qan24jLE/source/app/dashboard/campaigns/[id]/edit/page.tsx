@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import ProviderPicker from '@/components/ProviderPicker';
-import ClasificacionCampanaModal, { type Clasificacion } from '@/components/ClasificacionCampanaModal';
-import type { Campana } from '@/lib/n8n';
+import ClasificacionCampanaModal, { type Clasificacion, type ResumenEnvio } from '@/components/ClasificacionCampanaModal';
+import WhatsAppPreview from '@/components/WhatsAppPreview';
+import type { Campana, Proveedor } from '@/lib/n8n';
 
 const ESTADO_LABELS: Record<string, string> = {
   pendiente: 'Pendiente',
@@ -69,6 +70,36 @@ export default function EditCampaignPage() {
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState('');
   const [mostrarClasificacion, setMostrarClasificacion] = useState(false);
+  const [resumenEnvio, setResumenEnvio] = useState<ResumenEnvio | undefined>(undefined);
+  const [proveedoresData, setProveedoresData] = useState<Proveedor[]>([]);
+
+  useEffect(() => {
+    fetch('/api/providers')
+      .then((res) => res.json())
+      .then((data) => setProveedoresData(Array.isArray(data) ? data : []))
+      .catch(() => {});
+  }, []);
+
+  function calcularResumenEnvio(): ResumenEnvio {
+    const conteoPorZona: Record<string, number> = {};
+    for (const id of proveedoresIds) {
+      const prov = proveedoresData.find((p) => String(p.id) === id);
+      const zona = prov?.responsable_zona?.trim() || 'Sin responsable asignado (servidor principal)';
+      conteoPorZona[zona] = (conteoPorZona[zona] || 0) + 1;
+    }
+    return {
+      totalDestinatarios: proveedoresIds.length,
+      porZona: Object.entries(conteoPorZona)
+        .map(([zona, cantidad]) => ({ zona, cantidad }))
+        .sort((a, b) => b.cantidad - a.cantidad),
+      enviarInmediato,
+    };
+  }
+
+  const advertenciaEstado =
+    campanaOriginal && campanaOriginal.estado !== 'pendiente'
+      ? `Esta campaña ya está "${ESTADO_LABELS[campanaOriginal.estado] || campanaOriginal.estado}". Guardar los cambios puede reactivar su envío y volver a mandar el mensaje a todos los destinatarios.`
+      : undefined;
 
   useEffect(() => {
     async function cargar() {
@@ -160,6 +191,7 @@ export default function EditCampaignPage() {
     if (repetir && diasSemana.length === 0) return setError('Selecciona al menos un día de la semana para repetir el envío.');
     if (repetir && !fechaFinalizacion) return setError('Si vas a repetir el envío, debes indicar una fecha de finalización.');
 
+    setResumenEnvio(calcularResumenEnvio());
     setMostrarClasificacion(true);
   }
 
@@ -228,6 +260,12 @@ export default function EditCampaignPage() {
         </p>
       </div>
 
+      {advertenciaEstado && (
+        <p className="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700">
+          ⚠️ {advertenciaEstado}
+        </p>
+      )}
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="card space-y-5">
           <div className="flex items-center gap-2">
@@ -287,6 +325,8 @@ export default function EditCampaignPage() {
               </button>
             </div>
           </div>
+
+          <WhatsAppPreview imagenUrl={imagenMostrada} texto={texto} />
         </div>
 
         <div className="card space-y-5">
@@ -399,6 +439,8 @@ export default function EditCampaignPage() {
       <ClasificacionCampanaModal
         open={mostrarClasificacion}
         guardando={guardando || subiendoImagen}
+        resumenEnvio={resumenEnvio}
+        advertenciaEstado={advertenciaEstado}
         valorInicial={
           campanaOriginal?.clasificacion_tipo
             ? { tipo: campanaOriginal.clasificacion_tipo, carpeta: campanaOriginal.clasificacion_carpeta || '' }
