@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { Campana } from '@/lib/n8n';
+import { TIPOS_CLASIFICACION } from '@/components/ClasificacionCampanaModal';
 
 const estadoLabels: Record<string, string> = {
   pendiente: 'Pendiente',
@@ -11,11 +12,17 @@ const estadoLabels: Record<string, string> = {
   finalizada: 'Finalizada',
 };
 
+const tipoLabels: Record<string, string> = Object.fromEntries(
+  TIPOS_CLASIFICACION.map((t) => [t.value, t.label])
+);
+
 export default function DashboardPage() {
   const [campanas, setCampanas] = useState<Campana[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [deletingId, setDeletingId] = useState<string | number | null>(null);
+  const [filtroTipo, setFiltroTipo] = useState('');
+  const [filtroCarpeta, setFiltroCarpeta] = useState('');
 
   async function cargarCampanas() {
     setLoading(true);
@@ -36,6 +43,24 @@ export default function DashboardPage() {
     cargarCampanas();
   }, []);
 
+  const carpetasDisponibles = useMemo(() => {
+    if (!filtroTipo) return [];
+    const set = new Set(
+      campanas
+        .filter((c) => c.clasificacion_tipo === filtroTipo && c.clasificacion_carpeta)
+        .map((c) => c.clasificacion_carpeta as string)
+    );
+    return Array.from(set).sort();
+  }, [campanas, filtroTipo]);
+
+  const campanasFiltradas = useMemo(() => {
+    return campanas.filter((c) => {
+      if (filtroTipo && c.clasificacion_tipo !== filtroTipo) return false;
+      if (filtroCarpeta && c.clasificacion_carpeta !== filtroCarpeta) return false;
+      return true;
+    });
+  }, [campanas, filtroTipo, filtroCarpeta]);
+
   async function eliminarCampana(id: string | number) {
     if (!confirm('¿Seguro que quieres eliminar esta campaña?')) return;
     setDeletingId(id);
@@ -55,19 +80,65 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Campañas</h1>
           <p className="mt-1 text-sm text-slate-500">
             {loading
               ? 'Cargando...'
-              : `${campanas.length} campaña${campanas.length === 1 ? '' : 's'} en total`}
+              : `${campanasFiltradas.length} de ${campanas.length} campaña${campanas.length === 1 ? '' : 's'}`}
           </p>
         </div>
         <Link href="/dashboard/campaigns/new" className="btn-primary">
           <span className="text-base leading-none">+</span> Nueva campaña
         </Link>
       </div>
+
+      {!loading && campanas.length > 0 && (
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          <select
+            className="input w-auto text-sm"
+            value={filtroTipo}
+            onChange={(e) => {
+              setFiltroTipo(e.target.value);
+              setFiltroCarpeta('');
+            }}
+          >
+            <option value="">Todos los tipos</option>
+            {TIPOS_CLASIFICACION.map((t) => (
+              <option key={t.value} value={t.value}>
+                {t.label}
+              </option>
+            ))}
+          </select>
+          {filtroTipo && (
+            <select
+              className="input w-auto text-sm"
+              value={filtroCarpeta}
+              onChange={(e) => setFiltroCarpeta(e.target.value)}
+            >
+              <option value="">Todas las carpetas</option>
+              {carpetasDisponibles.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          )}
+          {(filtroTipo || filtroCarpeta) && (
+            <button
+              type="button"
+              onClick={() => {
+                setFiltroTipo('');
+                setFiltroCarpeta('');
+              }}
+              className="text-xs font-medium text-slate-500 hover:text-slate-700"
+            >
+              Limpiar filtro
+            </button>
+          )}
+        </div>
+      )}
 
       {loading && (
         <div className="space-y-3">
@@ -91,8 +162,14 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {!loading && !error && campanas.length > 0 && campanasFiltradas.length === 0 && (
+        <div className="card py-8 text-center text-sm text-slate-500">
+          No hay campañas que coincidan con este filtro.
+        </div>
+      )}
+
       <div className="space-y-3">
-        {campanas.map((c) => {
+        {campanasFiltradas.map((c) => {
           let proveedoresCount = 0;
           try {
             proveedoresCount = JSON.parse(c.proveedores_ids || '[]').length;
@@ -124,6 +201,11 @@ export default function DashboardPage() {
                     {proveedoresCount} proveedor{proveedoresCount === 1 ? '' : 'es'} ·{' '}
                     {c.enviar_inmediato ? 'Envío inmediato' : new Date(c.fecha_hora_envio).toLocaleString('es-CO')}
                   </p>
+                  {c.clasificacion_carpeta && (
+                    <p className="mt-1 truncate text-xs text-slate-400">
+                      {tipoLabels[c.clasificacion_tipo || ''] || c.clasificacion_tipo} · {c.clasificacion_carpeta}
+                    </p>
+                  )}
                 </div>
               </div>
               <div className="flex shrink-0 items-center gap-3">

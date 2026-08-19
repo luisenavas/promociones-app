@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ProviderPicker from '@/components/ProviderPicker';
+import ClasificacionCampanaModal, { type Clasificacion } from '@/components/ClasificacionCampanaModal';
 
 const DIAS = [
   { value: 1, label: 'Lun' },
@@ -34,6 +35,7 @@ export default function NewCampaignPage() {
   const [sugiriendo, setSugiriendo] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState('');
+  const [mostrarClasificacion, setMostrarClasificacion] = useState(false);
 
   async function handleImagenChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -80,7 +82,7 @@ export default function NewCampaignPage() {
     setDiasSemana((prev) => (prev.includes(dia) ? prev.filter((d) => d !== dia) : [...prev, dia]));
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
 
@@ -93,6 +95,11 @@ export default function NewCampaignPage() {
     if (repetir && diasSemana.length === 0) return setError('Selecciona al menos un día de la semana para repetir el envío.');
     if (repetir && !fechaFinalizacion) return setError('Si vas a repetir el envío, debes indicar una fecha de finalización.');
 
+    setMostrarClasificacion(true);
+  }
+
+  async function crearCampana(clasificacion: Clasificacion) {
+    setError('');
     setGuardando(true);
     try {
       const imagen_url = await subirImagen();
@@ -110,6 +117,8 @@ export default function NewCampaignPage() {
           fecha_hora_envio: enviarInmediato ? null : new Date(fechaHoraEnvio).toISOString(),
           fecha_finalizacion: fechaFinalizacion ? new Date(fechaFinalizacion).toISOString() : null,
           dias_semana: repetir ? diasSemana : [],
+          clasificacion_tipo: clasificacion.tipo,
+          clasificacion_carpeta: clasificacion.carpeta,
         }),
       });
       const data = await res.json();
@@ -118,6 +127,7 @@ export default function NewCampaignPage() {
       router.push('/dashboard');
       router.refresh();
     } catch (err: any) {
+      setMostrarClasificacion(false);
       setError(err.message);
     } finally {
       setGuardando(false);
@@ -297,6 +307,13 @@ export default function NewCampaignPage() {
           </button>
         </div>
       </form>
+
+      <ClasificacionCampanaModal
+        open={mostrarClasificacion}
+        guardando={guardando || subiendoImagen}
+        onCancelar={() => setMostrarClasificacion(false)}
+        onConfirmar={crearCampana}
+      />
     </div>
   );
 }

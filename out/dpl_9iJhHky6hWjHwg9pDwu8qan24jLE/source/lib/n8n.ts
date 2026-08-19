@@ -70,4 +70,6 @@ export type Campana = {
   proximo_envio?: string | null;
   estado: string;
   createdAt?: string;
+  clasificacion_tipo?: string;
+  clasificacion_carpeta?: string;
 };

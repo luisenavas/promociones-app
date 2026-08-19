@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import ProviderPicker from '@/components/ProviderPicker';
+import ClasificacionCampanaModal, { type Clasificacion } from '@/components/ClasificacionCampanaModal';
 import type { Campana } from '@/lib/n8n';
 
 const ESTADO_LABELS: Record<string, string> = {
@@ -67,6 +68,7 @@ export default function EditCampaignPage() {
   const [sugiriendo, setSugiriendo] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState('');
+  const [mostrarClasificacion, setMostrarClasificacion] = useState(false);
 
   useEffect(() => {
     async function cargar() {
@@ -145,7 +147,7 @@ export default function EditCampaignPage() {
     setDiasSemana((prev) => (prev.includes(dia) ? prev.filter((d) => d !== dia) : [...prev, dia]));
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
 
@@ -158,6 +160,11 @@ export default function EditCampaignPage() {
     if (repetir && diasSemana.length === 0) return setError('Selecciona al menos un día de la semana para repetir el envío.');
     if (repetir && !fechaFinalizacion) return setError('Si vas a repetir el envío, debes indicar una fecha de finalización.');
 
+    setMostrarClasificacion(true);
+  }
+
+  async function actualizarCampana(clasificacion: Clasificacion) {
+    setError('');
     setGuardando(true);
     try {
       const imagen_url = await subirImagen();
@@ -176,6 +183,8 @@ export default function EditCampaignPage() {
           fecha_finalizacion: fechaFinalizacion ? new Date(fechaFinalizacion).toISOString() : null,
           dias_semana: repetir ? diasSemana : [],
           estado: campanaOriginal?.estado,
+          clasificacion_tipo: clasificacion.tipo,
+          clasificacion_carpeta: clasificacion.carpeta,
         }),
       });
       const data = await res.json();
@@ -184,6 +193,7 @@ export default function EditCampaignPage() {
       router.push('/dashboard');
       router.refresh();
     } catch (err: any) {
+      setMostrarClasificacion(false);
       setError(err.message);
     } finally {
       setGuardando(false);
@@ -385,6 +395,18 @@ export default function EditCampaignPage() {
           </button>
         </div>
       </form>
+
+      <ClasificacionCampanaModal
+        open={mostrarClasificacion}
+        guardando={guardando || subiendoImagen}
+        valorInicial={
+          campanaOriginal?.clasificacion_tipo
+            ? { tipo: campanaOriginal.clasificacion_tipo, carpeta: campanaOriginal.clasificacion_carpeta || '' }
+            : null
+        }
+        onCancelar={() => setMostrarClasificacion(false)}
+        onConfirmar={actualizarCampana}
+      />
     </div>
   );
 }
