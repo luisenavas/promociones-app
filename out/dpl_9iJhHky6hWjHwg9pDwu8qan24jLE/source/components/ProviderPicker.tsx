@@ -447,33 +447,33 @@ export default function ProviderPicker({
       )}
 
       <div className="max-h-96 overflow-y-auto rounded-xl border border-slate-200">
-        <table className="w-full text-sm">
-          <thead className="sticky top-0 bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-400">
+        <table className="w-full text-xs">
+          <thead className="sticky top-0 bg-slate-50 text-left text-[11px] uppercase tracking-wide text-slate-400">
             <tr>
-              <th className="px-3 py-2.5"></th>
-              <th className="px-3 py-2"></th>
-              <th className="cursor-pointer px-3 py-2" onClick={() => toggleSort('nombre')}>
+              <th className="px-2 py-1.5"></th>
+              <th className="px-2 py-1.5"></th>
+              <th className="cursor-pointer px-2 py-1.5" onClick={() => toggleSort('nombre')}>
                 Nombre{arrow('nombre')}
               </th>
-              <th className="cursor-pointer px-3 py-2" onClick={() => toggleSort('ciudad')}>
+              <th className="cursor-pointer px-2 py-1.5" onClick={() => toggleSort('ciudad')}>
                 Ciudad{arrow('ciudad')}
               </th>
-              <th className="cursor-pointer px-3 py-2" onClick={() => toggleSort('departamento')}>
+              <th className="cursor-pointer px-2 py-1.5" onClick={() => toggleSort('departamento')}>
                 Departamento{arrow('departamento')}
               </th>
-              <th className="px-3 py-2">Teléfono</th>
-              <th className="cursor-pointer px-3 py-2" onClick={() => toggleSort('tipo')}>
+              <th className="px-2 py-1.5">Teléfono</th>
+              <th className="cursor-pointer px-2 py-1.5" onClick={() => toggleSort('tipo')}>
                 Tipo{arrow('tipo')}
               </th>
-              <th className="cursor-pointer px-3 py-2" onClick={() => toggleSort('cupo_credito')}>
+              <th className="cursor-pointer px-2 py-1.5" onClick={() => toggleSort('cupo_credito')}>
                 Cupo de crédito (deuda){arrow('cupo_credito')}
               </th>
-              <th className="cursor-pointer px-3 py-2" onClick={() => toggleSort('responsable_zona')}>
+              <th className="cursor-pointer px-2 py-1.5" onClick={() => toggleSort('responsable_zona')}>
                 Responsable de zona{arrow('responsable_zona')}
               </th>
-                              <th className="cursor-pointer px-3 py-2" onClick={() => toggleSort('tipificacion')}>
-                                                  Tipificación{arrow('tipificacion')}
-                              </th>
+              <th className="cursor-pointer px-2 py-1.5" onClick={() => toggleSort('tipificacion')}>
+                Tipificación{arrow('tipificacion')}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -488,13 +488,13 @@ export default function ProviderPicker({
                     checked ? 'bg-brand-50' : 'hover:bg-slate-50'
                   }`}
                 >
-                  <td className="px-3 py-2">
-                    <input type="checkbox" checked={checked} readOnly />
+                  <td className="px-2 py-1">
+                    <input type="checkbox" className="h-3.5 w-3.5" checked={checked} readOnly />
                   </td>
-                  <td className="px-3 py-2">
+                  <td className="px-2 py-1">
                     <button
                       type="button"
-                      className="text-xs font-medium text-brand-600 hover:underline"
+                      className="text-[11px] font-medium text-brand-600 hover:underline"
                       onClick={(e) => {
                         e.stopPropagation();
                         abrirFormEditar(p);
@@ -503,16 +503,16 @@ export default function ProviderPicker({
                       Editar
                     </button>
                   </td>
-                  <td className="px-3 py-2">{p.nombre}</td>
-                  <td className="px-3 py-2">{p.ciudad}</td>
-                  <td className="px-3 py-2">{p.departamento}</td>
-                  <td className="px-3 py-2">{telefono}</td>
-                  <td className="px-3 py-2">{p.tipo}</td>
-                  <td className="px-3 py-2">
+                  <td className="px-2 py-1">{p.nombre}</td>
+                  <td className="px-2 py-1">{p.ciudad}</td>
+                  <td className="px-2 py-1">{p.departamento}</td>
+                  <td className="px-2 py-1">{telefono}</td>
+                  <td className="px-2 py-1">{p.tipo}</td>
+                  <td className="px-2 py-1">
                     {typeof p.cupo_credito === 'number' ? p.cupo_credito.toLocaleString('es-CO') : p.cupo_credito}
                   </td>
-                  <td className="px-3 py-2">{p.responsable_zona}</td>
-                                  <td className="px-3 py-2">{p.tipificacion}</td>
+                  <td className="px-2 py-1">{p.responsable_zona}</td>
+                  <td className="px-2 py-1">{p.tipificacion}</td>
                 </tr>
               );
             })}
