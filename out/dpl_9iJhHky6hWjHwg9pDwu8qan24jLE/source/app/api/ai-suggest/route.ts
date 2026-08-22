@@ -2,6 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import Anthropic from '@anthropic-ai/sdk';
 import { authOptions } from '@/lib/auth';
+
+function limpiarSugerencia(texto: string): string {
+  return texto
+    .trim()
+    .replace(/^#{1,6}\s.*\n+/, '')
+    .split('\n')
+    .filter((linea) => !/^(-{3,}|\*{3,}|_{3,})$/.test(linea.trim()))
+    .join('\n')
+    .replace(/\n*\*?nota:[\s\S]*$/i, '')
+    .trim();
+}
+
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
@@ -18,6 +30,8 @@ export async function POST(req: NextRequest) {
     const message = await anthropic.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 300,
+      system:
+        'Respondes ÚNICAMENTE con el texto final del mensaje de WhatsApp, listo para copiar y pegar tal cual. No incluyas título, encabezado, líneas separadoras, notas ni comentarios de ningún tipo. No uses markdown (nada de "#", "*", "---", etc). No expliques lo que hiciste, solo entrega el mensaje.',
       messages: [
         {
           role: 'user',
@@ -30,7 +44,7 @@ export async function POST(req: NextRequest) {
       ],
     });
     const textBlock = message.content.find((block) => block.type === 'text');
-    const suggestion = textBlock && 'text' in textBlock ? textBlock.text : '';
+    const suggestion = limpiarSugerencia(textBlock && 'text' in textBlock ? textBlock.text : '');
     return NextResponse.json({ suggestion });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Error al generar la sugerencia.' }, { status: 500 });
